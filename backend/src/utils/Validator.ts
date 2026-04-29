@@ -21,12 +21,23 @@ export default class Validator {
         return value.trim() === '' ? ValidationError.new({code: error, value: value}) : null
     }
 
-    static sizeSmallerThen(value: string | any[], maxSize: number, error: string): ValidationError | null {
+    // Returns an error when the value's length is less than the given `minSize`.
+    static sizeLessThan(value: string | any[], minSize: number, error: string): ValidationError | null {
+        return value.length < minSize ? ValidationError.new({code: error, value: value}) : null
+    }
+
+    // Returns an error when the value's length is greater than the given `maxSize`.
+    static sizeGreaterThan(value: string | any[], maxSize: number, error: string): ValidationError | null {
         return value.length > maxSize ? ValidationError.new({code: error, value: value}) : null
     }
 
+    // Backwards-compatible aliases (kept for callers that may still use the old names).
+    static sizeSmallerThen(value: string | any[], maxSize: number, error: string): ValidationError | null {
+        return Validator.sizeGreaterThan(value, maxSize, error)
+    }
+
     static sizeLargerThen(value: string | any[], minSize: number, error: string): ValidationError | null {
-        return value.length < minSize ? ValidationError.new({code: error, value: value}) : null
+        return Validator.sizeLessThan(value, minSize, error)
     }
 
     static regex(value: string, regex: RegExp, error: string): ValidationError | null {

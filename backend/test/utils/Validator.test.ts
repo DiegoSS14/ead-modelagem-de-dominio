@@ -75,28 +75,28 @@ describe('Validator - notEmpty', () => {
 
 describe('Validator - sizeSmallerThen', () => {
     test('Deve retornar null quando tamanho é menor que o máximo', () => {
-        const error = Validator.sizeSmallerThen('Diego', 10, Errors.BIG_NAME)
+        const error = Validator.sizeGreaterThan('Diego', 10, Errors.BIG_NAME)
         expect(error).toBeNull()
     })
 
     test('Deve retornar null quando tamanho é igual ao máximo', () => {
-        const error = Validator.sizeSmallerThen('Diego', 5, Errors.BIG_NAME)
+        const error = Validator.sizeGreaterThan('Diego', 5, Errors.BIG_NAME)
         expect(error).toBeNull()
     })
 
     test('Deve retornar erro quando tamanho é maior que o máximo', () => {
-        const error = Validator.sizeSmallerThen('Diego Silva', 5, Errors.BIG_NAME)
+        const error = Validator.sizeGreaterThan('Diego Silva', 5, Errors.BIG_NAME)
         expect(error).not.toBeNull()
         expect(error?.code).toBe(Errors.BIG_NAME)
     })
 
     test('Deve funcionar com arrays', () => {
-        const error = Validator.sizeSmallerThen([1, 2, 3], 5, Errors.BIG_NAME)
+        const error = Validator.sizeGreaterThan([1, 2, 3], 5, Errors.BIG_NAME)
         expect(error).toBeNull()
     })
 
     test('Deve retornar erro para array maior que máximo', () => {
-        const error = Validator.sizeSmallerThen([1, 2, 3, 4, 5], 3, Errors.BIG_NAME)
+        const error = Validator.sizeGreaterThan([1, 2, 3, 4, 5], 3, Errors.BIG_NAME)
         expect(error).not.toBeNull()
         expect(error?.code).toBe(Errors.BIG_NAME)
     })
@@ -104,28 +104,28 @@ describe('Validator - sizeSmallerThen', () => {
 
 describe('Validator - sizeLargerThen', () => {
     test('Deve retornar null quando tamanho é maior ou igual ao mínimo', () => {
-        const error = Validator.sizeLargerThen('Diego Silva', 5, Errors.SMALL_NAME)
+        const error = Validator.sizeLessThan('Diego Silva', 5, Errors.SMALL_NAME)
         expect(error).toBeNull()
     })
 
     test('Deve retornar null quando tamanho é exatamente igual ao mínimo', () => {
-        const error = Validator.sizeLargerThen('Diego', 5, Errors.SMALL_NAME)
+        const error = Validator.sizeLessThan('Diego', 5, Errors.SMALL_NAME)
         expect(error).toBeNull()
     })
 
     test('Deve retornar erro quando tamanho é menor que o mínimo', () => {
-        const error = Validator.sizeLargerThen('Ana', 5, Errors.SMALL_NAME)
+        const error = Validator.sizeLessThan('Ana', 5, Errors.SMALL_NAME)
         expect(error).not.toBeNull()
         expect(error?.code).toBe(Errors.SMALL_NAME)
     })
 
     test('Deve funcionar com arrays', () => {
-        const error = Validator.sizeLargerThen([1, 2, 3, 4, 5], 3, Errors.SMALL_NAME)
+        const error = Validator.sizeLessThan([1, 2, 3, 4, 5], 3, Errors.SMALL_NAME)
         expect(error).toBeNull()
     })
 
     test('Deve retornar erro para array menor que mínimo', () => {
-        const error = Validator.sizeLargerThen([1, 2], 5, Errors.SMALL_NAME)
+        const error = Validator.sizeLessThan([1, 2], 5, Errors.SMALL_NAME)
         expect(error).not.toBeNull()
         expect(error?.code).toBe(Errors.SMALL_NAME)
     })
@@ -257,6 +257,28 @@ describe('Validator - combine', () => {
     test('Deve retornar array vazio transformado em null', () => {
         const result = Validator.combine(...[null, null].filter(e => e !== null))
         expect(result).toBeNull()
+    })
+})
+
+describe('Validator - alias de tamanho', () => {
+    test('Deve validar nomes curtos e cobrir método novo e alias', () => {
+        const directError = Validator.sizeLessThan('Ana', 5, Errors.SMALL_NAME)
+        const aliasError = Validator.sizeLargerThen('Ana', 5, Errors.SMALL_NAME)
+
+        expect(directError).not.toBeNull()
+        expect(directError?.code).toBe(Errors.SMALL_NAME)
+        expect(aliasError).not.toBeNull()
+        expect(aliasError?.code).toBe(Errors.SMALL_NAME)
+    })
+
+    test('Deve validar nomes longos e cobrir método novo e alias', () => {
+        const directError = Validator.sizeGreaterThan('Diego Silva', 5, Errors.BIG_NAME)
+        const aliasError = Validator.sizeSmallerThen('Diego Silva', 5, Errors.BIG_NAME)
+
+        expect(directError).not.toBeNull()
+        expect(directError?.code).toBe(Errors.BIG_NAME)
+        expect(aliasError).not.toBeNull()
+        expect(aliasError?.code).toBe(Errors.BIG_NAME)
     })
 })
 
