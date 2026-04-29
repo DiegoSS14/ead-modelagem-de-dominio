@@ -2,7 +2,7 @@ import Errors from "@/constants/Errors"
 
 export interface ValidationErrorProps{
     code?: string
-    value?: number
+    value?: any
     extras?: Object
 }
 
